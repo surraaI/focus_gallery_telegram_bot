@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+.env.local
+.env.*.local
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Test artifacts / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Data / uploads
+uploads/
