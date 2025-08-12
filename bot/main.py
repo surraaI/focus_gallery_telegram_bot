@@ -74,7 +74,7 @@ async def upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def list_categories(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """List available categories"""
     try:
-        url = f"{BACKEND_URL}/categories"
+        url = f"{BACKEND_URL}/categories/"
         logger.info(f"Fetching categories from: {url}")
         
         # Use follow_redirects to handle 307 redirects

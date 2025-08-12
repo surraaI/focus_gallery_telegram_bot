@@ -16,7 +16,7 @@ async def get_years(category: str = Query(...)):
         return []
     return sorted(result[0].get("years", []), reverse=True)
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_images(
     category: str = Query(...),
     year: int = Query(...),

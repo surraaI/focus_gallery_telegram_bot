@@ -12,7 +12,7 @@ from typing import List
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 logger = logging.getLogger(__name__)
 
-@router.post("/", response_model=ImageMetadata)
+@router.post("", response_model=ImageMetadata)
 async def upload_image(
     file: UploadFile = File(...),
     category: str = Form(...),
