@@ -6,19 +6,21 @@ import os
 class Settings(BaseSettings):
     backend_host: str = "0.0.0.0"
     backend_port: int = 8000
-    bot_backend_api_key: str
+    
+    # Use the exact environment variable name
+    BOT_BACKEND_API_KEY: str = Field(..., env="BOT_BACKEND_API_KEY")
     
     use_https: bool = Field(False, description="Use HTTPS for serving")
     ssl_keyfile: Optional[str] = Field(None, description="SSL key file path")
     ssl_certfile: Optional[str] = Field(None, description="SSL certificate file path")
     
-    bot_token: str
-    bot_admin_ids: List[int] = Field(default_factory=list)
+    bot_token: str = Field(..., env="BOT_TOKEN")
+    bot_admin_ids: List[int] = Field(default_factory=list, env="BOT_ADMIN_IDS")
     
-    mongodb_url: str
-    cloudinary_cloud_name: str
-    cloudinary_api_key: str
-    cloudinary_api_secret: str
+    mongodb_url: str = Field(..., env="MONGODB_URL")
+    cloudinary_cloud_name: str = Field(..., env="CLOUDINARY_CLOUD_NAME")
+    cloudinary_api_key: str = Field(..., env="CLOUDINARY_API_KEY")
+    cloudinary_api_secret: str = Field(..., env="CLOUDINARY_API_SECRET")
     
     class Config:
         env_file = ".env"

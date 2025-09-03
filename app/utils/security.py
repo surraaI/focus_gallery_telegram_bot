@@ -11,7 +11,7 @@ async def verify_api_key(authorization: str = Header(...)):
         )
     
     token = authorization.split("Bearer ")[1].strip()
-    if token != settings.bot_backend_api_key:
+    if token != settings.BOT_BACKEND_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid API token"

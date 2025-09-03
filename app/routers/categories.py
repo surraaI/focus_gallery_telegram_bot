@@ -5,7 +5,7 @@ from typing import List
 
 router = APIRouter()
 
-@router.get("", response_model=List[Category])
+@router.get("/", response_model=List[Category])
 async def get_categories():
     categories = []
     cursor = database.db.categories.find({})
