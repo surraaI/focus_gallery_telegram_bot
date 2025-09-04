@@ -2,18 +2,19 @@ import logging
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from telegram.ext import Application, CommandHandler, ConversationHandler , CallbackQueryHandler, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, ConversationHandler, CallbackQueryHandler, MessageHandler, filters
 from bot.states import (
     SELECTING_CATEGORY, SELECTING_YEAR, VIEWING_IMAGES,
     UPLOAD_SELECT_CATEGORY, UPLOAD_GET_YEAR, UPLOAD_GET_IMAGES, UPLOAD_NEXT_ACTION
 )
-from bot.handlers.base import get_base_handlers
+from bot.handlers.base import get_base_handlers, cancel_command
 from bot.handlers.browse import start_browse, get_browse_handlers
-from bot.handlers.upload import handle_upload_category, handle_upload_images, handle_upload_next_action, handle_upload_year, start_upload_flow, cancel_upload, get_upload_handlers
+from bot.handlers.upload import handle_upload_category, handle_upload_images, handle_upload_next_action, handle_upload_year, start_upload_flow, get_upload_handlers
 
 # Load environment variables from .env file in project root
 env_path = Path(__file__).parent.parent / '.env'
 load_dotenv(env_path)
+
 # Configure logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -35,7 +36,8 @@ def main() -> None:
         .pool_timeout(30)
         .build()
     )
-    # Add base command handlers (without browse/upload commands)
+    
+    # Add base command handlers
     for handler in get_base_handlers():
         application.add_handler(handler)
     
@@ -47,9 +49,9 @@ def main() -> None:
             SELECTING_YEAR: get_browse_handlers(),
             VIEWING_IMAGES: get_browse_handlers(),
         },
-        fallbacks=[],
-        per_user=True,  # Track state per user
-        per_chat=True,  # Track state per chat
+        fallbacks=[CommandHandler("cancel", cancel_command)],
+        per_user=True,
+        per_chat=True,
         conversation_timeout=300
     )
     application.add_handler(browse_conv)
@@ -72,7 +74,7 @@ def main() -> None:
                 CallbackQueryHandler(handle_upload_next_action, pattern=r"^(more_same|change_settings|stop_upload)$")
             ]
         },
-        fallbacks=[CommandHandler("cancel", cancel_upload)],
+        fallbacks=[CommandHandler("cancel", cancel_command)],
         per_user=True,
         per_chat=True,
         conversation_timeout=300

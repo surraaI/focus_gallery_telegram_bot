@@ -1,8 +1,7 @@
 from telegram import Update
-from telegram.ext import ContextTypes, CommandHandler
+from telegram.ext import ContextTypes, CommandHandler, ConversationHandler
 from bot import api
 from bot.helpers import is_admin
-from bot.handlers import browse, upload
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send welcome message with admin status"""
@@ -35,9 +34,20 @@ async def list_categories(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text(message, parse_mode='Markdown')
 
+async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Cancel any ongoing operation"""
+    # Clear all conversation data
+    keys_to_remove = ['category_id', 'category_name', 'year', 'page', 'upload_data']
+    for key in keys_to_remove:
+        context.user_data.pop(key, None)
+    
+    await update.message.reply_text("Operation cancelled.")
+    return ConversationHandler.END
+
 def get_base_handlers():
     return [
         CommandHandler("start", start),
         CommandHandler("id", id_command),
         CommandHandler("categories", list_categories),
+        CommandHandler("cancel", cancel_command),
     ]

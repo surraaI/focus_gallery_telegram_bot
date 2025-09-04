@@ -1,13 +1,13 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.database import database
 from app.routers import categories, images, upload
 from app.services.cloudinary import configure_cloudinary
 from app.config import get_settings
 import logging
 
-# Get settings first
-settings = get_settings()
 logger = logging.getLogger(__name__)
+settings = get_settings()
 
 app = FastAPI(
     title="Focus Gallery API",
@@ -15,8 +15,16 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    # Removed servers parameter to avoid issues
-    redirect_slashes=False  # This is important to prevent 307 redirects
+    redirect_slashes=False
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include routers
