@@ -2,17 +2,24 @@ import httpx
 import os
 import logging
 from typing import Optional
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from project root
+project_root = Path(__file__).parent.parent
+env_path = project_root / '.env'
+load_dotenv(env_path)
 
 logger = logging.getLogger(__name__)
 
 # API configuration
-BACKEND_URL = "http://127.0.0.1:8000/api/v1"
-API_KEY = os.getenv("BOT_BACKEND_API_KEY")  
+BACKEND_URL = os.getenv("BOT_BACKEND_URL", "http://127.0.0.1:8000/api/v1")
+API_KEY = os.getenv("BOT_BACKEND_API_KEY")
 
 async def get_categories():
     headers = {}
     if API_KEY:
-         headers['Authorization'] = API_KEY
+        headers['Authorization'] = f'Bearer {API_KEY}'
     
     async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(f"{BACKEND_URL}/categories/", headers=headers)
@@ -24,7 +31,7 @@ async def get_categories():
 async def get_years(category_id: str):
     headers = {}
     if API_KEY:
-         headers['Authorization'] = API_KEY
+        headers['Authorization'] = f'Bearer {API_KEY}'
     
     async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(
@@ -40,7 +47,7 @@ async def get_years(category_id: str):
 async def get_images(category_id: str, year: int, page: int, per_page: int = 5):
     headers = {}
     if API_KEY:
-         headers['Authorization'] = API_KEY
+        headers['Authorization'] = f'Bearer {API_KEY}'
     
     async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(
